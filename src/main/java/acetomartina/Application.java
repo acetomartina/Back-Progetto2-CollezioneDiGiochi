@@ -190,6 +190,89 @@ public class Application {
                         System.out.println("Gioco rimosso correttamente.");
                     }
 
+                    case 7 -> {
+
+                        System.out.println("Inserisci l'ID del gioco da aggiornare:");
+
+                        String id = scanner.nextLine().trim().toUpperCase();
+
+                        Gioco giocoDaAggiornare = collezione.cercaPerId(id);
+
+                        System.out.println("Gioco trovato:");
+
+                        System.out.println(giocoDaAggiornare);
+
+                        if (giocoDaAggiornare instanceof Videogioco) {
+                            System.out.println("Stai aggiornando un videogioco.");
+
+                            System.out.println("Nuovo titolo: ");
+                            String nuovoTitolo = scanner.nextLine();
+
+                            System.out.println("Nuovo anno di pubblicazione: ");
+                            int nuovoAnno = Integer.parseInt(scanner.nextLine());
+
+                            System.out.println("Nuovo prezzo: ");
+                            double nuovoPrezzo = Double.parseDouble(scanner.nextLine());
+
+                            System.out.println("Piattaforme disponibili: PC, PS5, XBOX, SWITCH");
+                            System.out.println("Nuova piattaforma: ");
+                            Piattaforma nuovaPiattaforma =
+                                    Piattaforma.valueOf(scanner.nextLine().toUpperCase());
+
+                            System.out.println("Generi disponibili: ACTION, ADVENTURE, RPG, STRATEGY, SPORT, HORROR, SHOOTER, RACING");
+                            System.out.println("Nuovo genere: ");
+                            Genere nuovoGenere =
+                                    Genere.valueOf(scanner.nextLine().toUpperCase());
+
+                            System.out.println("Nuova durata in ore: ");
+                            int nuovaDurata = Integer.parseInt(scanner.nextLine());
+
+                            Videogioco videogiocoAggiornato = new Videogioco(
+                                    id,
+                                    nuovoTitolo,
+                                    nuovoAnno,
+                                    nuovoPrezzo,
+                                    nuovaDurata,
+                                    nuovaPiattaforma,
+                                    nuovoGenere
+                            );
+
+                            collezione.aggiornaGioco(id, videogiocoAggiornato);
+
+                            System.out.println("Videogioco aggiornato correttamente!");
+                        } else if (giocoDaAggiornare instanceof GiocoDaTavolo) {
+                            System.out.println("Stai aggiornando un gioco da tavolo.");
+
+                            System.out.println("Nuovo titolo: ");
+                            String nuovoTitolo = scanner.nextLine();
+
+                            System.out.println("Nuovo anno di pubblicazione: ");
+                            int nuovoAnno = Integer.parseInt(scanner.nextLine());
+
+                            System.out.println("Nuovo prezzo: ");
+                            double nuovoPrezzo = Double.parseDouble(scanner.nextLine());
+
+                            System.out.println("Nuovo numero giocatori: ");
+                            int nuovoNumeroGiocatori = Integer.parseInt(scanner.nextLine());
+
+                            System.out.println("Nuova durata media in minuti: ");
+                            int nuovaDurataMedia = Integer.parseInt(scanner.nextLine());
+
+                            GiocoDaTavolo giocoDaTavoloAggiornato = new GiocoDaTavolo(
+                                    id,
+                                    nuovoTitolo,
+                                    nuovoAnno,
+                                    nuovoPrezzo,
+                                    nuovoNumeroGiocatori,
+                                    nuovaDurataMedia
+                            );
+
+                            collezione.aggiornaGioco(id, giocoDaTavoloAggiornato);
+
+                            System.out.println("Gioco da tavolo aggiornato correttamente!");
+                        }
+                    }
+
                     case 8 -> {
                         System.out.println("--- STATISTICHE ---");
                         collezione.stampaStatistiche();
