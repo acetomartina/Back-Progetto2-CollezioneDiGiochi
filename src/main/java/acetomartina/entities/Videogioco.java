@@ -10,6 +10,8 @@ public class Videogioco extends Gioco {
         this.piattaforma = piattaforma;
         this.durataOre = durataOre;
         this.genere = genere;
+
+
     }
 
 

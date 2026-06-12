@@ -3,142 +3,170 @@ package acetomartina;
 import acetomartina.entities.*;
 import exceptions.GiocoNonTrovato;
 import services.Collezione;
+import services.GiochiDemo;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Application {
 
     public static void main(String[] args) {
 
+        Scanner scanner = new Scanner(System.in);
+
         Collezione collezione = new Collezione();
+        GiochiDemo.caricaGiochiDemo(collezione);
 
-        Videogioco zelda = new Videogioco(
-                "V001",
-                "The Legend of Zelda: Tears of Kingdom",
-                2023,
-                69.99,
-                120,
-                Piattaforma.SWITCH,
-                Genere.ADVENTURE
-        );
+        int scelta = -1;
 
-        Videogioco assassinsCreed = new Videogioco(
-                "V002",
-                "Assassin's Creed: The Ezio Collections",
-                2016,
-                79.99,
-                110,
-                Piattaforma.PS5,
-                Genere.ACTION
-        );
+        while (scelta != 0) {
+            System.out.println("\nBenvenuto nella nostra Game Colletion!");
+            System.out.println("Cosa ti andrebbe di fare?");
+            System.out.println("1 - Visualizza catalogo disponibile");
+            System.out.println("2 - Aggiungi gioco");
+            System.out.println("3 - Cerca gioco per ID");
+            System.out.println("4 - Cerca giochi per prezzo");
+            System.out.println("5 - Cerca giochi da tavolo per numero giocatori");
+            System.out.println("6 - Rimuovi gioco");
+            System.out.println("7 - Aggiorna gioco");
+            System.out.println("8 - Visualizza statistiche");
+            System.out.println("0 - Esci");
 
-        Videogioco outlast = new Videogioco(
-                "V003",
-                "Outlast",
-                2013,
-                19.99,
-                10,
-                Piattaforma.PC,
-                Genere.HORROR
-        );
+            try {
+                scelta = Integer.parseInt(scanner.nextLine());
 
-        Videogioco forzaHorizon = new Videogioco(
-                "V004",
-                "Forza Horizon 5",
-                2021,
-                59.99,
-                60,
-                Piattaforma.XBOX,
-                Genere.RACING
-        );
+                switch (scelta) {
+                    case 1 -> {
+                        System.out.println("--- CATALOGO DISPONIBILE ---");
+                        System.out.println();
+                        collezione.getGiochi().forEach(System.out::println);
+                    }
 
-        GiocoDaTavolo villainous = new GiocoDaTavolo(
-                "G001",
-                "Disney Villainous",
-                2018,
-                39.99,
-                6,
-                60
-        );
+                    case 2 -> {
+                        System.out.println("Che tipo di gioco vuoi aggiungere?");
+                        System.out.println("1 - Videogioco");
+                        System.out.println("2 - Gioco da tavolo");
 
-        GiocoDaTavolo risiko = new GiocoDaTavolo(
-                "G002",
-                "Cluedo",
-                1957,
-                34.99,
-                4,
-                120
-        );
+                        int tipoGioco = Integer.parseInt(scanner.nextLine());
 
-        GiocoDaTavolo cluedo = new GiocoDaTavolo(
-                "G003",
-                "Cluedo",
-                1949,
-                29.99,
-                5,
-                45
-        );
+                        String id;
 
-        GiocoDaTavolo monopolyGot = new GiocoDaTavolo(
-                "G004",
-                "Monopoly Game of Thrones",
-                2019,
-                49.99,
-                6,
-                120
-        );
+                        while (true) {
+                            System.out.println(
+                                    "Inserisci l'ID (formato: V seguito da numeri, es. V005)"
+                            );
 
-        collezione.aggiungiGioco(zelda);
-        collezione.aggiungiGioco(assassinsCreed);
-        collezione.aggiungiGioco(outlast);
-        collezione.aggiungiGioco(forzaHorizon);
+                            id = scanner.nextLine().toUpperCase();
+                            if (id.matches("V\\d{3}")) {
+                                break;
+                            }
+                        }
+                        System.out.println("ID non valido. Deve iniziare con V ed essere seguito da 3 numeri. Esempio: V005.");
 
-        collezione.aggiungiGioco(villainous);
-        collezione.aggiungiGioco(risiko);
-        collezione.aggiungiGioco(cluedo);
-        collezione.aggiungiGioco(monopolyGot);
 
-        for (Gioco gioco : collezione.getGiochi()) {
-            System.out.println(gioco);
-        }
+                        System.out.println("Inserisci il titolo: ");
+                        String titolo = scanner.nextLine();
 
-        try {
-            System.out.println(collezione.cercaPerId("V999"));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+                        System.out.println("Anno di pubblicazione: ");
+                        int anno = Integer.parseInt(scanner.nextLine());
 
-       /* List<Gioco> risultati = collezione.cercaPerPrezzo(50);
-        if (risultati.isEmpty()) {
-            System.out.println("Non sono presenti videogiochi inferiori a questa soglia di prezzo."
-            );
-        } else {
-            risultati.forEach(System.out::println);
-        }
-    } */
+                        System.out.println("Prezzo: ");
+                        double prezzo = Integer.parseInt(scanner.nextLine());
 
-        try {
-            List<GiocoDaTavolo> risultati = collezione.cercaPerNumeroGiocatori(19);
-            if (risultati.isEmpty()) {
-                System.out.println("Non sono presenti giochi con questo numero di giocatori."
-                );
-            } else {
-                risultati.forEach(System.out::println);
+                        switch (tipoGioco) {
+                            case 1 -> {
+                                System.out.println("Piattaforme disponibili: PC, PS5, XBOX, SWITCH");
+                                System.out.println("Piattaforma: ");
+                                Piattaforma piattaforma = Piattaforma.valueOf(scanner.nextLine().toUpperCase());
+
+                                System.out.println("Generi disponibili: ACTION, ADVENTURE, RPG, STRATEGY, SPORT, HORROR, SHOOTER, RACING");
+                                System.out.println("Genere: ");
+                                Genere genere = Genere.valueOf(scanner.nextLine().toUpperCase());
+
+                                System.out.println("Durata di gioco in ore: ");
+                                int durataOre = Integer.parseInt(scanner.nextLine());
+
+                                Videogioco videogioco = new Videogioco(
+                                        id,
+                                        titolo,
+                                        anno,
+                                        prezzo,
+                                        durataOre,
+                                        piattaforma,
+                                        genere
+                                );
+
+                                collezione.aggiungiGioco(videogioco);
+                                System.out.println("Videogioco aggiunto correttamente!");
+
+                            }
+                        }
+
+
+                    }
+
+                    case 3 -> {
+                        System.out.println("Inserisci l'ID del gioco: ");
+                        String id = scanner.nextLine();
+
+                        Gioco gioco = collezione.cercaPerId(id);
+
+                        System.out.println("\nGioco trovato!");
+                        System.out.println(gioco);
+                    }
+
+                    case 4 -> {
+                        System.out.println("Inserisci la soglia di prezzo: ");
+                        double prezzo = Double.parseDouble(scanner.nextLine());
+
+                        List<Gioco> risultati = collezione.cercaPerPrezzo(prezzo);
+
+                        if (risultati.isEmpty()) {
+                            System.out.println("Non sono presenti giochi inferiori a questa soglia di prezzo.");
+                        } else {
+                            System.out.println("--- RISULTATI ---");
+                            risultati.forEach(System.out::println);
+                        }
+                    }
+
+                    case 5 -> {
+                        System.out.println("Inserisci il numero dei giocatori: ");
+                        int numeroGiocatori = Integer.parseInt(scanner.nextLine());
+
+                        List<GiocoDaTavolo> risultati = collezione.cercaPerNumeroGiocatori(numeroGiocatori);
+
+                        if (risultati.isEmpty()) {
+                            System.out.println("Non sono presenti giochi da tavolo con questo numero di giocatori.");
+                        } else {
+                            System.out.println("---RISULTATI---");
+                            risultati.forEach(System.out::println);
+                        }
+                    }
+
+                    case 6 -> {
+                        System.out.println("Inserisci l'ID del gioco da rimuovere: ");
+                        String id = scanner.nextLine();
+
+                        collezione.rimuoviPerId(id);
+                        System.out.println("Gioco rimosso correttamente.");
+                    }
+
+                    case 8 -> {
+                        System.out.println("--- STATISTICHE ---");
+                        collezione.stampaStatistiche();
+                    }
+
+                    case 0 -> System.out.println("Uscita dal programma. Alla prossima!");
+                    default -> System.out.println("Scelta non valida.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Devi inserire un numero valido");
+            } catch (IllegalArgumentException | GiocoNonTrovato e) {
+                System.out.println(e.getMessage());
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+
+
         }
-
-        try {
-            collezione.rimuoviPerId("V001");
-            System.out.println("Gioco rimosso correttamente!");
-
-            collezione.getGiochi().forEach(System.out::println);
-        } catch (GiocoNonTrovato | IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-
-        collezione.stampaStatistiche();
     }
 
 

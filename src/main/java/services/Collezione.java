@@ -127,7 +127,8 @@ public class Collezione {
 
         System.out.println("Il totale dei Videogiochi è: " + totaleVideogiochi);
         System.out.println("Il totale dei giochi da tavolo è: " + totaleGiochiDaTavolo);
-        System.out.println("Il gioco -tra tutti- più costoso è: " + giocoPiuCostoso);
+        System.out.println("Il gioco -tra tutti- più costoso è: ");
+        System.out.println(giocoPiuCostoso);
         System.out.println("La media dei prezzi dei giochi è: " + mediaPrezzi + "€");
     }
 
