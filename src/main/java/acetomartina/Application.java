@@ -1,6 +1,7 @@
 package acetomartina;
 
 import acetomartina.entities.*;
+import exceptions.GiocoGiaEsistente;
 import exceptions.GiocoNonTrovato;
 import services.Collezione;
 import services.GiochiDemo;
@@ -20,7 +21,7 @@ public class Application {
         int scelta = -1;
 
         while (scelta != 0) {
-            System.out.println("\nBenvenuto nella nostra Game Colletion!");
+            System.out.println("\nBenvenuto nella nostra Game Collection!");
             System.out.println("Cosa ti andrebbe di fare?");
             System.out.println("1 - Visualizza catalogo disponibile");
             System.out.println("2 - Aggiungi gioco");
@@ -36,9 +37,9 @@ public class Application {
                 scelta = Integer.parseInt(scanner.nextLine());
 
                 switch (scelta) {
+
                     case 1 -> {
                         System.out.println("--- CATALOGO DISPONIBILE ---");
-                        System.out.println();
                         collezione.getGiochi().forEach(System.out::println);
                     }
 
@@ -49,20 +50,37 @@ public class Application {
 
                         int tipoGioco = Integer.parseInt(scanner.nextLine());
 
-                        String id;
+                        String id = "";
 
                         while (true) {
-                            System.out.println(
-                                    "Inserisci l'ID (formato: V seguito da numeri, es. V005)"
-                            );
-
-                            id = scanner.nextLine().toUpperCase();
-                            if (id.matches("V\\d{3}")) {
+                            if (tipoGioco == 1) {
+                                System.out.println("Inserisci l'ID del videogioco (formato: V005): ");
+                            } else if (tipoGioco == 2) {
+                                System.out.println("Inserisci l'ID del gioco da tavolo (formato: G005): ");
+                            } else {
+                                System.out.println("Tipo gioco non valido.");
                                 break;
                             }
-                        }
-                        System.out.println("ID non valido. Deve iniziare con V ed essere seguito da 3 numeri. Esempio: V005.");
 
+                            id = scanner.nextLine().trim().toUpperCase();
+
+                            if (tipoGioco == 1 && !id.matches("V\\d{3}")) {
+                                System.out.println("ID non valido. Deve essere nel formato V001.");
+                                continue;
+                            }
+
+                            if (tipoGioco == 2 && !id.matches("G\\d{3}")) {
+                                System.out.println("ID non valido. Deve essere nel formato G001.");
+                                continue;
+                            }
+
+                            if (collezione.esisteId(id)) {
+                                System.out.println("Esiste già un gioco con questo ID. Inserisci un nuovo ID.");
+                                continue;
+                            }
+
+                            break;
+                        }
 
                         System.out.println("Inserisci il titolo: ");
                         String titolo = scanner.nextLine();
@@ -71,9 +89,10 @@ public class Application {
                         int anno = Integer.parseInt(scanner.nextLine());
 
                         System.out.println("Prezzo: ");
-                        double prezzo = Integer.parseInt(scanner.nextLine());
+                        double prezzo = Double.parseDouble(scanner.nextLine());
 
                         switch (tipoGioco) {
+
                             case 1 -> {
                                 System.out.println("Piattaforme disponibili: PC, PS5, XBOX, SWITCH");
                                 System.out.println("Piattaforma: ");
@@ -98,11 +117,30 @@ public class Application {
 
                                 collezione.aggiungiGioco(videogioco);
                                 System.out.println("Videogioco aggiunto correttamente!");
-
                             }
+
+                            case 2 -> {
+                                System.out.println("Numero giocatori: ");
+                                int numeroGiocatori = Integer.parseInt(scanner.nextLine());
+
+                                System.out.println("Durata media di una partita in minuti: ");
+                                int durataMedia = Integer.parseInt(scanner.nextLine());
+
+                                GiocoDaTavolo giocoDaTavolo = new GiocoDaTavolo(
+                                        id,
+                                        titolo,
+                                        anno,
+                                        prezzo,
+                                        numeroGiocatori,
+                                        durataMedia
+                                );
+
+                                collezione.aggiungiGioco(giocoDaTavolo);
+                                System.out.println("Gioco da tavolo aggiunto correttamente!");
+                            }
+
+                            default -> System.out.println("Tipo gioco non valido.");
                         }
-
-
                     }
 
                     case 3 -> {
@@ -133,12 +171,13 @@ public class Application {
                         System.out.println("Inserisci il numero dei giocatori: ");
                         int numeroGiocatori = Integer.parseInt(scanner.nextLine());
 
-                        List<GiocoDaTavolo> risultati = collezione.cercaPerNumeroGiocatori(numeroGiocatori);
+                        List<GiocoDaTavolo> risultati =
+                                collezione.cercaPerNumeroGiocatori(numeroGiocatori);
 
                         if (risultati.isEmpty()) {
                             System.out.println("Non sono presenti giochi da tavolo con questo numero di giocatori.");
                         } else {
-                            System.out.println("---RISULTATI---");
+                            System.out.println("--- RISULTATI ---");
                             risultati.forEach(System.out::println);
                         }
                     }
@@ -157,17 +196,30 @@ public class Application {
                     }
 
                     case 0 -> System.out.println("Uscita dal programma. Alla prossima!");
+
                     default -> System.out.println("Scelta non valida.");
                 }
+
             } catch (NumberFormatException e) {
-                System.out.println("Devi inserire un numero valido");
-            } catch (IllegalArgumentException | GiocoNonTrovato e) {
+                System.out.println("Devi inserire un numero valido.");
+            } catch (IllegalArgumentException | GiocoNonTrovato | GiocoGiaEsistente e) {
                 System.out.println(e.getMessage());
             }
-
-
         }
     }
 
+    private static int leggiIntero(Scanner scanner, String messaggio) {
 
+        while (true) {
+            try {
+                System.out.println(messaggio);
+                return Integer.parseInt(scanner.nextLine());
+
+            } catch (NumberFormatException e) {
+                System.out.println(
+                        "Valore non valido. Inserisci un numero intero."
+                );
+            }
+        }
+    }
 }

@@ -132,6 +132,11 @@ public class Collezione {
         System.out.println("La media dei prezzi dei giochi è: " + mediaPrezzi + "€");
     }
 
+    public boolean esisteId(String id) {
+        return giochi.stream()
+                .anyMatch(g -> g.getId().equalsIgnoreCase(id));
+    }
+
 
 }
 
